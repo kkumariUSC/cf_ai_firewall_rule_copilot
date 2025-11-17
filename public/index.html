@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Firewall Rule Generator</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <div class="container">
+    
+    <header>
+      <h1>⚡ AI Firewall Rule Generator</h1>
+      <p class="subtitle">Generate Cloudflare WAF rules using natural language.</p>
+    </header>
+
+    <section class="input-card">
+      <label>Describe the firewall rule you want:</label>
+      <textarea id="userInput" placeholder="e.g. Block POST requests to /login from India except 123.45.67.89"></textarea>
+      <button id="generateBtn">Generate Rule</button>
+    </section>
+
+    <section class="results">
+      <div class="result-block">
+        <h2>Expression</h2>
+        <pre id="exprBox" class="code"></pre>
+      </div>
+
+      <div class="result-block">
+        <h2>JSON Rule</h2>
+        <pre id="jsonBox" class="code"></pre>
+      </div>
+
+      <div class="result-block">
+        <h2>Explanation</h2>
+        <div id="explanation"></div>
+      </div>
+
+      <div class="result-block warnings">
+        <h2>Warnings</h2>
+        <ul id="warningList"></ul>
+      </div>
+    </section>
+
+    <aside class="history-panel">
+      <h2>History</h2>
+      <div id="historyList"></div>
+      <button id="clearHistory">Clear History</button>
+    </aside>
+
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

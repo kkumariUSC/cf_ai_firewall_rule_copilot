@@ -1,0 +1,46 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  "name": "cf-ai-waf",
+  "main": "src/index.js",
+  "compatibility_date": "2025-11-15",
+
+  // Workers AI binding
+  "ai": { "binding": "AI" },
+
+  // Durable Object for rule history + stateful workflow
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RULE_HISTORY",
+        "class_name": "RuleHistoryDO"
+      }
+    ]
+  },
+
+  // DO migration
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["RuleHistoryDO"]
+    }
+  ],
+
+  // Optional: KV for caching global rules or suggestions
+  "kv_namespaces": [
+    {
+      "binding": "RULE_CACHE",
+      "id": "c0dd278d7aa743e18197b24036b12e9b"
+    }
+  ],
+
+  // Serve frontend UI from /public
+  "assets": {
+    "directory": "public",
+    "binding": "ASSETS"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
