@@ -8,7 +8,7 @@
   // Workers AI binding
   "ai": { "binding": "AI" },
 
-  // Durable Object for rule history + stateful workflow
+  // Durable Object binding
   "durable_objects": {
     "bindings": [
       {
@@ -18,15 +18,15 @@
     ]
   },
 
-  // DO migration
+  // 🚨 REQUIRED for FREE PLAN — MUST use new_sqlite_classes
   "migrations": [
     {
       "tag": "v1",
-      "new_classes": ["RuleHistoryDO"]
+      "new_sqlite_classes": ["RuleHistoryDO"]
     }
   ],
 
-  // Optional: KV for caching global rules or suggestions
+  // Optional KV namespace
   "kv_namespaces": [
     {
       "binding": "RULE_CACHE",
@@ -34,7 +34,7 @@
     }
   ],
 
-  // Serve frontend UI from /public
+  // Static asset binding
   "assets": {
     "directory": "public",
     "binding": "ASSETS"

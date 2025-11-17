@@ -3,7 +3,6 @@ export class RuleHistoryDO {
     this.state = state;
     this.env = env;
 
-    // Load existing history (if any)
     this.state.blockConcurrencyWhile(async () => {
       this.rules = await this.state.storage.get("rules") || [];
     });
@@ -16,16 +15,16 @@ export class RuleHistoryDO {
     // -------------------------
     // GET /history  → return all rules
     // -------------------------
-    if (url.pathname === "/history" && method === "GET") {
+    if (url.pathname.endsWith("/history") && method === "GET") {
       return new Response(JSON.stringify(this.rules), {
         headers: { "Content-Type": "application/json" }
       });
     }
 
     // -------------------------
-    // POST /add  → add new rule to history
+    // POST /add  → add rule
     // -------------------------
-    if (url.pathname === "/add" && method === "POST") {
+    if (url.pathname.endsWith("/add") && method === "POST") {
       const rule = await request.json();
 
       this.rules.push({
@@ -44,17 +43,21 @@ export class RuleHistoryDO {
     // -------------------------
     // POST /clear → delete all rules
     // -------------------------
-    if (url.pathname === "/clear" && method === "POST") {
+    if (url.pathname.replace(/\/$/, "") === "/clear" && method === "POST") {
       this.rules = [];
       await this.state.storage.put("rules", this.rules);
-      return new Response(JSON.stringify({ cleared: true }));
+
+      return new Response(JSON.stringify({ cleared: true }), {
+        headers: { "Content-Type": "application/json" }
+      });
     }
 
     // -------------------------
-    // DELETE /delete/:id → remove a rule
+    // DELETE /delete/:id
     // -------------------------
-    if (url.pathname.startsWith("/delete/") && method === "DELETE") {
+    if (url.pathname.includes("/delete/") && method === "DELETE") {
       const id = url.pathname.split("/").pop();
+
       this.rules = this.rules.filter(r => r.id !== id);
       await this.state.storage.put("rules", this.rules);
 
@@ -62,9 +65,9 @@ export class RuleHistoryDO {
     }
 
     // -------------------------
-    // GET /get/:id → return a single rule
+    // GET /get/:id
     // -------------------------
-    if (url.pathname.startsWith("/get/") && method === "GET") {
+    if (url.pathname.includes("/get/") && method === "GET") {
       const id = url.pathname.split("/").pop();
       const rule = this.rules.find(r => r.id === id);
 

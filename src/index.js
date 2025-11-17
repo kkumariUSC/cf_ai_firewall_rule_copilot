@@ -13,42 +13,40 @@ export default {
     const path = url.pathname;
     const method = request.method;
 
-    // --------------------------------------
-    // Serve frontend UI
-    // --------------------------------------
-    if (env.ASSETS && (path === "/" || path.startsWith("/public") || path.endsWith(".html"))) {
+    // -----------------------------------------------------
+    // STATIC ASSETS (serve everything except /api/*)
+    // -----------------------------------------------------
+    if (!path.startsWith("/api")) {
       return env.ASSETS.fetch(request);
     }
 
-    // --------------------------------------
-    // Generate Firewall Rule
+    // -----------------------------------------------------
     // POST /api/generate
-    // --------------------------------------
-    if (path === "/api/generate" && method === "POST") {
+    // -----------------------------------------------------
+    if (path.includes("/api/generate") && method === "POST") {
       return generateRule(request, env);
     }
 
-    // --------------------------------------
-    // Get Rule History
+    // -----------------------------------------------------
     // GET /api/history
-    // --------------------------------------
-    if (path === "/api/history" && method === "GET") {
+    // -----------------------------------------------------
+    if (path.includes("/api/history") && !path.includes("/clear") && method === "GET") {
       const id = env.RULE_HISTORY.idFromName("history");
       return env.RULE_HISTORY.get(id).fetch("http://do/history");
     }
 
-    // --------------------------------------
-    // Clear Rule History
+    // -----------------------------------------------------
     // POST /api/history/clear
-    // --------------------------------------
-    if (path === "/api/history/clear" && method === "POST") {
+    // -----------------------------------------------------
+    if (path.includes("/api/history/clear") && method === "POST") {
       const id = env.RULE_HISTORY.idFromName("history");
-      return env.RULE_HISTORY.get(id).fetch("http://do/clear");
+      return env.RULE_HISTORY.get(id).fetch("http://do/clear", { method: "POST" });
     }
 
     return new Response("Not found", { status: 404 });
   }
 };
+
 
 // ------------------------------------------------------------
 // AI FIREWALL RULE GENERATOR
